@@ -1,0 +1,58 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "name": {
+            "type": "string",
+            "allowedValues": [],
+            "metadata": {
+                "description": "Choose a short base name for resources in this deployment, for more information about the solution deployment type navigate to https://github.com/haylesnortal/iothub_influx_demo/blob/master/README.md"
+            }
+        },
+        "location": {
+            "type": "string",
+            "defaultValue": "westeurope",
+            "allowedValues": [
+                "australiasoutheast",
+                "canadacentral",
+                "centralindia",
+                "eastus",
+                "japaneast",
+                "southeastasia",
+                "uksouth",
+                "westeurope",
+                "westus"
+            ],
+            "metadata": {
+                "description": "Primary location of deployment, for more information about the solution deployment type navigate to https://github.com/haylesnortal/iothub_influx_demo/blob/master/README.md"
+            }
+        }
+    },
+    "variables": {
+        "baseUrl": "[deployment().properties.templateLink.uri]",
+        "rando": "[uniqueString(resourceGroup().id, parameters('name'))]",
+        "baseName": "[concat(parameters('name'), '-', variables('rando'))]",
+        "baseNameSafe": "[concat(substring(toLower(replace(variables('baseName'),'-', '')), 0, 8),variables('rando'))]",
+        "vnetSettings": {}
+    },
+    "resources": [
+        {
+            "name": "vnet",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-01-01",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('baseUrl'),'vnet/deploy.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "VnetSettings": {
+                        "value": "[variables('vnetSettings')]"
+                    }
+                }
+            }
+        }
+    ],
+    "outputs": {}
+  }
