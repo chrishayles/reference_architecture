@@ -6,25 +6,27 @@
             "type": "string",
             "allowedValues": [],
             "metadata": {
-                "description": "Choose a short base name for resources in this deployment, for more information about the solution deployment type navigate to https://github.com/haylesnortal/iothub_influx_demo/blob/master/README.md"
+                "description": ""
             }
         },
-        "location": {
+        "VM Username": {
             "type": "string",
-            "defaultValue": "westeurope",
-            "allowedValues": [
-                "australiasoutheast",
-                "canadacentral",
-                "centralindia",
-                "eastus",
-                "japaneast",
-                "southeastasia",
-                "uksouth",
-                "westeurope",
-                "westus"
-            ],
+            "defaultValue": "admin123",
             "metadata": {
-                "description": "Primary location of deployment, for more information about the solution deployment type navigate to https://github.com/haylesnortal/iothub_influx_demo/blob/master/README.md"
+                "description": ""
+            }
+        },
+        "VM Password": {
+            "type": "securestring",
+            "metadata": {
+                "description": ""
+            }
+        },
+        "Resource Group West": {
+            "type": "string",
+            "defaultValue": "[replace(resourceGroup().name, 'east', 'west')]",
+            "metadata": {
+                "description": ""
             }
         }
     },
@@ -33,13 +35,82 @@
         "rando": "[uniqueString(resourceGroup().id, parameters('name'))]",
         "baseName": "[concat(parameters('name'), '-', variables('rando'))]",
         "baseNameSafe": "[concat(substring(toLower(replace(variables('baseName'),'-', '')), 0, 8),variables('rando'))]",
-        "vnetSettings": {}
+        "rgEast": "[resourceGroup().name]",
+        "rgWest": "[parameters('Resource Group West')]",
+        "vnetSettingsEast": {
+            "name": "[concat(variables('baseName'), '-vnet-east')]",
+            "addressSpace": "10.0.0.0/16",
+            "subnets": [
+                {
+                    "name": "aks",
+                    "properties": {
+                        "addressPrefix": "10.0.2.0/24",
+                        "serviceEndpoints": [],
+                        "delegations": [],
+                        "privateEndpointNetworkPolicies": "Enabled",
+                        "privateLinkServiceNetworkPolicies": "Enabled"
+                    }
+                },
+                {
+                    "name": "admin",
+                    "properties": {
+                        "addressPrefix": "10.0.3.0/24",
+                        "serviceEndpoints": [],
+                        "privateEndpointNetworkPolicies": "Enabled",
+                        "privateLinkServiceNetworkPolicies": "Enabled"
+                    }
+                }
+            ]
+        },
+        "vnetSettingsWest": {
+            "name": "[concat(variables('baseName'), '-vnet-west')]",
+            "addressSpace": "10.1.0.0/16",
+            "subnets": [
+                {
+                    "name": "aks",
+                    "properties": {
+                        "addressPrefix": "10.1.2.0/24",
+                        "serviceEndpoints": [],
+                        "delegations": [],
+                        "privateEndpointNetworkPolicies": "Enabled",
+                        "privateLinkServiceNetworkPolicies": "Enabled"
+                    }
+                },
+                {
+                    "name": "admin",
+                    "properties": {
+                        "addressPrefix": "10.1.3.0/24",
+                        "serviceEndpoints": [],
+                        "privateEndpointNetworkPolicies": "Enabled",
+                        "privateLinkServiceNetworkPolicies": "Enabled"
+                    }
+                }
+            ]
+        },
+        "postgresSettings": {
+            "eastName": "[concat(variables('baseName'), '-psql-east')]",
+            "westName": "[concat(variables('baseName'), '-psql-west')]",
+            "username": "[parameters('VM Username')]",
+            "password": "[parameters('VM Password')]",
+            "rgEast": "[variables('rgEast')]",
+            "rgWest": "[variables('rgWest')]"
+        },
+        "aksSettings": {
+            "name": "[concat(variables('baseName'), '-aks')]"
+        },
+        "trafficManagerSettings": {
+            "name": "[concat(variables('baseName'), '-tm')]"
+        },
+        "vmSettings": {
+            "name": "[concat(variables('baseName'), '-vm')]"
+        }
     },
     "resources": [
         {
-            "name": "vnet",
+            "name": "vnet-east",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-01-01",
+            "resourceGroup": "[variables('rgEast')]",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -48,11 +119,55 @@
                 },
                 "parameters": {
                     "VnetSettings": {
-                        "value": "[variables('vnetSettings')]"
+                        "value": "[variables('vnetSettingsEast')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "vnet-west",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-01-01",
+            "resourceGroup": "[variables('rgWest')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('baseUrl'),'vnet/deploy.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "VnetSettings": {
+                        "value": "[variables('vnetSettingsWest')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "psql",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-01-01",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('baseUrl'),'postgres/deploy.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "PostgresSettings": {
+                        "value": "[variables('postgresSettings')]"
                     }
                 }
             }
         }
     ],
-    "outputs": {}
+    "outputs": {
+        "Postgres East": {
+            "type": "string",
+            "value": "[reference('psql').outputs.psql_east.value]"
+        },
+        "Postgres West": {
+            "type": "string",
+            "value": "[reference('psql').outputs.psql_west.value]"
+        }
+    }
   }

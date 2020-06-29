@@ -2,14 +2,114 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "placeholder": {
-            "type": "string",
-            "allowedValues": [],
+        "PostgresSettings": {
+            "type": "object",
             "metadata": {
-                "description": "description"
+                "description": "Settings object. Expects properties: eastName, westName, storageMB, username, password, rgEast, rgWest"
             }
-        }},
-    "variables": {},
-    "resources": [],
-    "outputs": {}
+        }
+    },
+    "variables": {
+        "eastName": "[parameters('PostgresSettings').eastName]",
+        "westName": "[parameters('PostgresSettings').westName]",
+        "username": "[parameters('PostgresSettings').username]",
+        "password": "[parameters('PostgresSettings').password]",
+        "rgEast": "[parameters('PostgresSettings').rgEast]",
+        "rgWest": "[parameters('PostgresSettings').rgWest]"
+    },
+    "resources": [
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "name": "east",
+            "resourceGroup": "[variables('rgEast')]",
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "contentVersion": "1.0.0.0",
+                    "resources": [
+                        {
+                            "type": "Microsoft.DBforPostgreSQL/servers",
+                            "apiVersion": "2017-12-01-preview",
+                            "name": "[variables('eastName')]",
+                            "location": "eastus",
+                            "sku": {
+                                "name": "GP_Gen5_4",
+                                "tier": "GeneralPurpose",
+                                "capacity": 4,
+                                "size": "102400",
+                                "family": "Gen5"
+                            },
+                            "kind": "",
+                            "properties": {
+                                "version": "10.0",
+                                "createMode": "Default",
+                                "administratorLogin": "[variables('username')]",
+                                "administratorLoginPassword": "[variables('password')]",
+                                "storageProfile": {
+                                    "storageMB": 102400,
+                                    "backupRetentionDays": 7,
+                                    "geoRedundantBackup": "Disabled",
+                                    "storageAutoGrow": "Enabled"
+                                },
+                                "previewFeature": "",
+                                "infrastructureEncryption": "Disabled"
+                            }
+                        }              
+                    ]
+                }
+            }
+        },
+        {
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-10-01",
+            "name": "west",
+            "resourceGroup": "[variables('rgWest')]",
+            "dependsOn": [
+                "east"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "template": {
+                    "contentVersion": "1.0.0.0",
+                    "resources": [
+                        {
+                            "type": "Microsoft.DBforPostgreSQL/servers",
+                            "apiVersion": "2017-12-01-preview",
+                            "name": "[variables('westName')]",
+                            "location": "westus",
+                            "sku": {
+                                "name": "GP_Gen5_4",
+                                "tier": "GeneralPurpose",
+                                "capacity": 4,
+                                "size": "102400",
+                                "family": "Gen5"
+                            },
+                            "kind": "",
+                            "properties": {
+                                "createMode": "Replica",
+                                "sourceServerId": "[resourceId('Microsoft.DBforPostgreSQL/servers', variables('eastName'))]",
+                                "storageProfile": {
+                                    "storageMB": 102400,
+                                    "backupRetentionDays": 7,
+                                    "geoRedundantBackup": "Disabled",
+                                    "storageAutoGrow": "Enabled"
+                                }
+                            }
+                        }              
+                    ]
+                }
+            }
+        }
+    ],
+    "outputs": {
+        "psql_east": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.DBforPostgreSQL/servers',variables('eastName'))).fullyQualifiedDomainName]"
+        },
+        "psql_west": {
+            "type": "string",
+            "value": "[reference(resourceId('Microsoft.DBforPostgreSQL/servers',variables('westName'))).fullyQualifiedDomainName]"
+        }
+    }
   }
