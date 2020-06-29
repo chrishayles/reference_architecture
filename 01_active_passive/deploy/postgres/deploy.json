@@ -56,13 +56,7 @@
                                 "infrastructureEncryption": "Disabled"
                             }
                         }              
-                    ],
-                    "outputs": {
-                        "psql_east": {
-                            "type": "string",
-                            "value": "[reference(resourceId('Microsoft.DBforPostgreSQL/servers',variables('eastName'))).fullyQualifiedDomainName]"
-                        }
-                    }
+                    ]
                 }
             }
         },
@@ -103,25 +97,9 @@
                                 }
                             }
                         }              
-                    ],
-                    "outputs": {
-                        "psql_west": {
-                            "type": "string",
-                            "value": "[reference(resourceId('Microsoft.DBforPostgreSQL/servers',variables('westName'))).fullyQualifiedDomainName]"
-                        }
-                    }
+                    ]
                 }
             }
         }
-    ],
-    "outputs": {
-        "psql_east": {
-            "type": "string",
-            "value": "[reference('east').outputs.psql_east.value]"
-        },
-        "psql_west": {
-            "type": "string",
-            "value": "[reference('west').outputs.psql_east.value]"
-        }
-    }
+    ]
   }
