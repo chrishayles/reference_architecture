@@ -159,5 +159,15 @@
                 }
             }
         }
-    ]
+    ],
+    "outputs": {
+        "Postgres East": {
+            "type": "string",
+            "value": "[reference('psql').outputs.psql_east.value]"
+        },
+        "Postgres West": {
+            "type": "string",
+            "value": "[reference('psql').outputs.psql_west.value]"
+        }
+    }
   }
