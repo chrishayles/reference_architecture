@@ -69,82 +69,12 @@
                     }
                 }
             }
-        },
-        {
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-06-01",
-            "name": "west",
-            "resourceGroup": "[variables('rgWest')]",
-            "dependsOn": [
-                "east"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "expressionEvaluationOptions": {
-                    "scope": "inner"
-                },
-                "parameters": {
-                    "east_id": {
-                        "value": "[reference('east').outputs.east_id.value]"
-                    },
-                    "westName": {
-                        "value": "[variables('westName')]"
-                    }
-                },
-                "template": {
-                    "contentVersion": "1.0.0.0",
-                    "parameters": {
-                        "east_id": {
-                            "type": "string"
-                        },
-                        "westName": {
-                            "type": "string"
-                        }
-                    },
-                    "resources": [
-                        {
-                            "type": "Microsoft.DBforPostgreSQL/servers",
-                            "apiVersion": "2017-12-01-preview",
-                            "name": "[parameters('westName')]",
-                            "location": "westus",
-                            "sku": {
-                                "name": "GP_Gen5_4",
-                                "tier": "GeneralPurpose",
-                                "capacity": 4,
-                                "size": "102400",
-                                "family": "Gen5"
-                            },
-                            "kind": "",
-                            "properties": {
-                                "createMode": "Replica",
-                                "sourceServerId": "[parameters('east_id')]",
-                                "storageProfile": {
-                                    "storageMB": 102400,
-                                    "backupRetentionDays": 7,
-                                    "geoRedundantBackup": "Disabled",
-                                    "storageAutoGrow": "Enabled"
-                                }
-                            }
-                        }              
-                    ],
-                    "outputs": {
-                        "psql_west": {
-                            "type": "string",
-                            "value": "[reference(resourceId('Microsoft.DBforPostgreSQL/servers',parameters('westName'))).fullyQualifiedDomainName]"
-                        }
-                    }
-                }
-            }
         }
     ],
     "outputs": {
         "psql_east": {
             "type": "string",
             "value": "[reference('east').outputs.psql_east.value]"
-        },
-        "psql_west": {
-            "type": "string",
-            "value": "[reference('west').outputs.psql_east.value]"
         }
     }
   }
