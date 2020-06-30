@@ -61,7 +61,7 @@
                     "outputs": {
                         "psql_east": {
                             "type": "string",
-                            "value": "[reference(resourceId('Microsoft.DBforPostgreSQL/servers',variables('eastName'))).fullyQualifiedDomainName]"
+                            "value": "[reference(resourceId('Microsoft.DBforPostgreSQL/servers',variables('eastName')),'2017-12-01-preview').fullyQualifiedDomainName]"
                         },
                         "east_id": {
                             "type": "string",
