@@ -31,7 +31,7 @@
                     "resources": [
                         {
                             "type": "Microsoft.DBforPostgreSQL/servers",
-                            "apiVersion": "2017-12-01-preview",
+                            "apiVersion": "2017-12-01",
                             "name": "[variables('eastName')]",
                             "location": "eastus",
                             "sku": {
@@ -41,10 +41,8 @@
                                 "size": "102400",
                                 "family": "Gen5"
                             },
-                            "kind": "",
                             "properties": {
                                 "version": "10.0",
-                                "createMode": "Default",
                                 "administratorLogin": "[variables('username')]",
                                 "administratorLoginPassword": "[variables('password')]",
                                 "storageProfile": {
@@ -53,7 +51,6 @@
                                     "geoRedundantBackup": "Disabled",
                                     "storageAutoGrow": "Enabled"
                                 },
-                                "previewFeature": "",
                                 "infrastructureEncryption": "Disabled"
                             }
                         }              
@@ -61,7 +58,7 @@
                     "outputs": {
                         "psql_east": {
                             "type": "string",
-                            "value": "[reference(resourceId('Microsoft.DBforPostgreSQL/servers',variables('eastName')),'2017-12-01-preview').fullyQualifiedDomainName]"
+                            "value": "[reference(resourceId('Microsoft.DBforPostgreSQL/servers',variables('eastName')),'2017-12-01').fullyQualifiedDomainName]"
                         },
                         "east_id": {
                             "type": "string",
@@ -106,7 +103,7 @@
                     "resources": [
                         {
                             "type": "Microsoft.DBforPostgreSQL/servers",
-                            "apiVersion": "2017-12-01-preview",
+                            "apiVersion": "2017-12-01",
                             "name": "[parameters('westName')]",
                             "location": "westus",
                             "sku": {
@@ -116,7 +113,6 @@
                                 "size": "102400",
                                 "family": "Gen5"
                             },
-                            "kind": "",
                             "properties": {
                                 "createMode": "Replica",
                                 "sourceServerId": "[parameters('east_id')]",
