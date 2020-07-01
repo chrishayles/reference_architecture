@@ -132,12 +132,12 @@
     ],
     "outputs": {
         "psql_east": {
-            "type": "string",
-            "value": "[reference('east').outputs.east_id.value]"
+            "type": "object",
+            "value": "[reference(reference('east').outputs.east_id.value, '2017-12-01', 'full')]"
         },
         "psql_west": {
-            "type": "string",
-            "value": "[reference('west').outputs.west_id.value]"
+            "type": "object",
+            "value": "[reference(reference('west').outputs.west_id.value, '2017-12-01', 'full')]"
         }
     }
   }
