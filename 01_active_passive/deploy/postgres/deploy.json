@@ -116,7 +116,7 @@
                                     "storageMB": 102400,
                                     "backupRetentionDays": 7,
                                     "geoRedundantBackup": "Disabled",
-                                    "storageAutoGrow": "Enabled"
+                                    "storageAutoGrow": "Disabled"
                                 }
                             }
                         }              
