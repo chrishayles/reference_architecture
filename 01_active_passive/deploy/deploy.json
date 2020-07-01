@@ -46,7 +46,7 @@
                 {
                     "name": "aks",
                     "properties": {
-                        "addressPrefixes": ["10.0.2.0/24"],
+                        "addressPrefix": "10.0.2.0/24",
                         "serviceEndpoints": [],
                         "delegations": [],
                         "privateEndpointNetworkPolicies": "Enabled",
@@ -56,7 +56,7 @@
                 {
                     "name": "admin",
                     "properties": {
-                        "addressPrefixes": ["10.0.3.0/24"],
+                        "addressPrefix": "10.0.3.0/24",
                         "serviceEndpoints": [],
                         "privateEndpointNetworkPolicies": "Enabled",
                         "privateLinkServiceNetworkPolicies": "Enabled"
@@ -73,7 +73,7 @@
                 {
                     "name": "aks",
                     "properties": {
-                        "addressPrefixes": ["10.1.2.0/24"],
+                        "addressPrefix": "10.1.2.0/24",
                         "serviceEndpoints": [],
                         "delegations": [],
                         "privateEndpointNetworkPolicies": "Enabled",
@@ -83,7 +83,7 @@
                 {
                     "name": "admin",
                     "properties": {
-                        "addressPrefixes": ["10.1.3.0/24"],
+                        "addressPrefix": "10.1.3.0/24",
                         "serviceEndpoints": [],
                         "privateEndpointNetworkPolicies": "Enabled",
                         "privateLinkServiceNetworkPolicies": "Enabled"
