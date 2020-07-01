@@ -54,7 +54,13 @@
                                 "infrastructureEncryption": "Disabled"
                             }
                         }              
-                    ]
+                    ],
+                    "outputs": {
+                        "east_id": {
+                            "type": "string",
+                            "value": "[resourceId('Microsoft.DBforPostgreSQL/servers', variables('eastName'))]"
+                        }
+                    }
                 }
             }
         }
