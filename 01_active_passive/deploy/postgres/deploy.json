@@ -133,11 +133,11 @@
     "outputs": {
         "psql_east": {
             "type": "object",
-            "value": "[reference(reference('east').outputs.east_id.value, '2017-12-01', 'full')]"
+            "value": "[reference(concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',variables('rgEast'),'/providers/Microsoft.DBforPostgreSQL/servers/',variables('eastName')), '2017-12-01', 'full')]"
         },
         "psql_west": {
             "type": "object",
-            "value": "[reference(reference('west').outputs.west_id.value, '2017-12-01', 'full')]"
+            "value": "[reference(concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',variables('rgWest'),'/providers/Microsoft.DBforPostgreSQL/servers/',variables('westName')), '2017-12-01', 'full')]"
         }
     }
   }
