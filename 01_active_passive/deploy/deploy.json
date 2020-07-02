@@ -166,12 +166,12 @@
     ],
     "outputs": {
         "Postgres East": {
-            "type": "object",
-            "value": "[reference(concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',variables('rgEast'),'/providers/Microsoft.DBforPostgreSQL/servers/',variables('postgresSettings').eastName), '2017-12-01', 'Full')]"
+            "type": "string",
+            "value": "[reference(reference('psql').outputs.psql_east.value, '2017-12-01', 'Full')]"
         },
         "Postgres West": {
-            "type": "object",
-            "value": "[reference(concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',variables('rgWest'),'/providers/Microsoft.DBforPostgreSQL/servers/',variables('postgresSettings').westName), '2017-12-01', 'Full')]"
+            "type": "string",
+            "value": "[reference(reference('psql').outputs.psql_west.value, '2017-12-01', 'Full')]"
         }
     }
   }
