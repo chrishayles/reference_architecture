@@ -167,11 +167,11 @@
     "outputs": {
         "Postgres East": {
             "type": "object",
-            "value": "[reference(concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',variables('rgEast'),'/providers/Microsoft.DBforPostgreSQL/servers/',variables('postgresSettings').eastName))]"
+            "value": "[reference(concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',variables('rgEast'),'/providers/Microsoft.DBforPostgreSQL/servers/',variables('postgresSettings').eastName), '2017-12-01', 'Full')]"
         },
         "Postgres West": {
             "type": "object",
-            "value": "[reference(concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',variables('rgWest'),'/providers/Microsoft.DBforPostgreSQL/servers/',variables('postgresSettings').westName))]"
+            "value": "[reference(concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',variables('rgWest'),'/providers/Microsoft.DBforPostgreSQL/servers/',variables('postgresSettings').westName), '2017-12-01', 'Full')]"
         }
     }
   }
