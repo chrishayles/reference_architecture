@@ -166,7 +166,7 @@
     ],
     "outputs": {
         "Postgres East": {
-            "type": "object",
+            "type": "string",
             "value": "[reference('psql').outputs.psql_east.value]"
         },
         "Postgres West": {
