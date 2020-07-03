@@ -93,15 +93,32 @@
         },
         "postgresSettingsEast": {
             "name": "[concat(variables('baseName'), '-psql-east')]",
-            "username": "[parameters('VM Username')]",
-            "password": "[parameters('VM Password')]",
-            "rg": "[variables('rgEast')]"
+            "location": "useast",
+            "properties": {
+                "version": "10.0",
+                "administratorLogin": "[parameters('VM Username')]",
+                "administratorLoginPassword": "[parameters('VM Password')]",
+                "storageProfile": {
+                    "storageMB": 102400,
+                    "backupRetentionDays": 7,
+                    "geoRedundantBackup": "Disabled",
+                    "storageAutoGrow": "Enabled"
+                },
+                "infrastructureEncryption": "Disabled"
+            }
         },
         "postgresSettingsWest": {
             "name": "[concat(variables('baseName'), '-psql-west')]",
-            "username": "[parameters('VM Username')]",
-            "password": "[parameters('VM Password')]",
-            "rg": "[variables('rgWest')]"
+            "location": "uswest",
+            "properties": {
+                "createMode": "Replica",
+                "sourceServerId": "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',variables('rgEast'),'/providers/Microsoft.DBforPostgreSQL/servers/',variables('postgresSettingsEast').name)]",
+                "storageProfile": {
+                    "storageMB": 102400,
+                    "backupRetentionDays": 7,
+                    "geoRedundantBackup": "Disabled"
+                }        
+            }
         },
         "aksSettings": {
             "name": "[concat(variables('baseName'), '-aks')]"
@@ -154,6 +171,7 @@
             "name": "psql-east",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-01-01",
+            "resourceGroup": "[variables('rgEast')]",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -162,7 +180,28 @@
                 },
                 "parameters": {
                     "PostgresSettings": {
-                        "value": "[variables('postgresSettings')]"
+                        "value": "[variables('postgresSettingsEast')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "psql-west",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-01-01",
+            "resourceGroup": "[variables('rgWest')]",
+            "dependsOn": [
+                "psql-east"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('baseUrl'),'postgres/deploy.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "PostgresSettings": {
+                        "value": "[variables('postgresSettingsWest')]"
                     }
                 }
             }
