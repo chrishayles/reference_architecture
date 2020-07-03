@@ -33,7 +33,7 @@
     "outputs": {
         "fqdn": {
             "type": "string",
-            "value": "[reference(resourceId('Microsoft.DBforPostgreSQL/servers/',variables('name'))).fullyQualifiedDomainName]"
+            "value": "[concat(variables('name'),'.postgres.database.azure.com')]"
         }
     }
   }
