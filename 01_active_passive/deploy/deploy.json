@@ -93,7 +93,7 @@
         },
         "postgresSettingsEast": {
             "name": "[concat(variables('baseName'), '-psql-east')]",
-            "location": "useast",
+            "location": "eastus",
             "properties": {
                 "version": "10.0",
                 "administratorLogin": "[parameters('VM Username')]",
@@ -109,7 +109,7 @@
         },
         "postgresSettingsWest": {
             "name": "[concat(variables('baseName'), '-psql-west')]",
-            "location": "uswest",
+            "location": "westus",
             "properties": {
                 "createMode": "Replica",
                 "sourceServerId": "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',variables('rgEast'),'/providers/Microsoft.DBforPostgreSQL/servers/',variables('postgresSettingsEast').name)]",
