@@ -91,13 +91,17 @@
                 }
             ]
         },
-        "postgresSettings": {
-            "eastName": "[concat(variables('baseName'), '-psql-east')]",
-            "westName": "[concat(variables('baseName'), '-psql-west')]",
+        "postgresSettingsEast": {
+            "name": "[concat(variables('baseName'), '-psql-east')]",
             "username": "[parameters('VM Username')]",
             "password": "[parameters('VM Password')]",
-            "rgEast": "[variables('rgEast')]",
-            "rgWest": "[variables('rgWest')]"
+            "rg": "[variables('rgEast')]"
+        },
+        "postgresSettingsWest": {
+            "name": "[concat(variables('baseName'), '-psql-west')]",
+            "username": "[parameters('VM Username')]",
+            "password": "[parameters('VM Password')]",
+            "rg": "[variables('rgWest')]"
         },
         "aksSettings": {
             "name": "[concat(variables('baseName'), '-aks')]"
@@ -147,7 +151,7 @@
             }
         },
         {
-            "name": "psql",
+            "name": "psql-east",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-01-01",
             "properties": {
@@ -167,11 +171,11 @@
     "outputs": {
         "Postgres East": {
             "type": "string",
-            "value": "[reference(reference('psql').outputs.psql_east.value, '2017-12-01', 'Full')]"
+            "value": "Placeholder."
         },
         "Postgres West": {
             "type": "string",
-            "value": "[reference(reference('psql').outputs.psql_west.value, '2017-12-01', 'Full')]"
+            "value": "Placeholder."
         }
     }
   }

@@ -5,139 +5,35 @@
         "PostgresSettings": {
             "type": "object",
             "metadata": {
-                "description": "Settings object. Expects properties: eastName, westName, storageMB, username, password, rgEast, rgWest"
+                "description": "Settings object. Expects properties: name, location, properties"
             }
         }
     },
     "variables": {
-        "eastName": "[parameters('PostgresSettings').eastName]",
-        "westName": "[parameters('PostgresSettings').westName]",
-        "username": "[parameters('PostgresSettings').username]",
-        "password": "[parameters('PostgresSettings').password]",
-        "rgEast": "[parameters('PostgresSettings').rgEast]",
-        "rgWest": "[parameters('PostgresSettings').rgWest]"
+        "name": "[parameters('PostgresSettings').name]",
+        "location": "[parameters('PostgresSettings').location]",
+        "properties": "[parameters('PostgresSettings').properties]"
     },
     "resources": [
         {
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-06-01",
-            "name": "east",
-            "resourceGroup": "[variables('rgEast')]",
-            "properties": {
-                "mode": "Incremental",
-                "template": {
-                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                    "contentVersion": "1.0.0.0",
-                    "resources": [
-                        {
-                            "type": "Microsoft.DBforPostgreSQL/servers",
-                            "apiVersion": "2017-12-01",
-                            "name": "[variables('eastName')]",
-                            "location": "eastus",
-                            "sku": {
-                                "name": "GP_Gen5_4",
-                                "tier": "GeneralPurpose",
-                                "capacity": 4,
-                                "size": "102400",
-                                "family": "Gen5"
-                            },
-                            "properties": {
-                                "version": "10.0",
-                                "administratorLogin": "[variables('username')]",
-                                "administratorLoginPassword": "[variables('password')]",
-                                "storageProfile": {
-                                    "storageMB": 102400,
-                                    "backupRetentionDays": 7,
-                                    "geoRedundantBackup": "Disabled",
-                                    "storageAutoGrow": "Enabled"
-                                },
-                                "infrastructureEncryption": "Disabled"
-                            }
-                        }              
-                    ],
-                    "outputs": {
-                        "east_id": {
-                            "type": "string",
-                            "value": "[resourceId('Microsoft.DBforPostgreSQL/servers', variables('eastName'))]"
-                        }
-                    }
-                }
-            }
-        },
-        {
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-06-01",
-            "name": "west",
-            "resourceGroup": "[variables('rgWest')]",
-            "dependsOn": [
-                "east"
-            ],
-            "properties": {
-                "mode": "Incremental",
-                "expressionEvaluationOptions": {
-                    "scope": "inner"
-                },
-                "parameters": {
-                    "east_id": {
-                        "value": "[reference('east').outputs.east_id.value]"
-                    },
-                    "westName": {
-                        "value": "[variables('westName')]"
-                    }
-                },
-                "template": {
-                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                    "contentVersion": "1.0.0.0",
-                    "parameters": {
-                        "east_id": {
-                            "type": "string"
-                        },
-                        "westName": {
-                            "type": "string"
-                        }
-                    },
-                    "resources": [
-                        {
-                            "type": "Microsoft.DBforPostgreSQL/servers",
-                            "apiVersion": "2017-12-01",
-                            "name": "[parameters('westName')]",
-                            "location": "westus",
-                            "sku": {
-                                "name": "GP_Gen5_4",
-                                "tier": "GeneralPurpose",
-                                "capacity": 4,
-                                "size": "102400",
-                                "family": "Gen5"
-                            },
-                            "properties": {
-                                "createMode": "Replica",
-                                "sourceServerId": "[parameters('east_id')]",
-                                "storageProfile": {
-                                    "storageMB": 102400,
-                                    "backupRetentionDays": 7,
-                                    "geoRedundantBackup": "Disabled"
-                                }
-                            }
-                        }              
-                    ],
-                    "outputs": {
-                        "west_id": {
-                            "type": "string",
-                            "value": "[resourceId('Microsoft.DBforPostgreSQL/servers',parameters('westName'))]"
-                        }
-                    }
-                }
-            }
+            "type": "Microsoft.DBforPostgreSQL/servers",
+            "apiVersion": "2017-12-01",
+            "name": "[variables('name')]",
+            "location": "[variables('location')]",
+            "sku": {
+                "name": "GP_Gen5_4",
+                "tier": "GeneralPurpose",
+                "capacity": 4,
+                "size": "102400",
+                "family": "Gen5"
+            },
+            "properties": "[variables('properties')]"
         }
     ],
     "outputs": {
-        "psql_east": {
+        "fqdn": {
             "type": "string",
-            "value": "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',variables('rgEast'),'/providers/Microsoft.DBforPostgreSQL/servers/',variables('eastName'))]"
-        },
-        "psql_west": {
-            "type": "string",
-            "value": "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',variables('rgWest'),'/providers/Microsoft.DBforPostgreSQL/servers/',variables('westName'))]"
+            "value": "[reference(resourceId('Microsoft.DBforPostgreSQL/servers/',variables('name'))).fullyQualifiedDomainName]"
         }
     }
   }
