@@ -95,6 +95,7 @@
             "name": "[concat(variables('baseName'), '-psql-east')]",
             "location": "eastus",
             "properties": {
+                "createMode": "Default",
                 "version": "10.0",
                 "administratorLogin": "[parameters('VM Username')]",
                 "administratorLoginPassword": "[parameters('VM Password')]",
