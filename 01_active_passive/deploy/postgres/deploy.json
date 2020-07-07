@@ -18,7 +18,7 @@
     "resources": [
         {
             "type": "Microsoft.DBforPostgreSQL/servers",
-            "apiVersion": "2017-12-01",
+            "apiVersion": "2020-06-01",
             "name": "[variables('name')]",
             "location": "[variables('location')]",
             "sku": {
@@ -33,7 +33,7 @@
                 {
                     "name": "db1",
                     "type": "databases",
-                    "apiVersion": "2017-12-01",
+                    "apiVersion": "2020-06-01",
                     "properties": {
                         "charset": "utf8",
                         "collation": "English_United States.1252"
