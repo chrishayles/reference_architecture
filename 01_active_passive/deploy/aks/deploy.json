@@ -2,14 +2,80 @@
     "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
     "contentVersion": "1.0.0.0",
     "parameters": {
-        "placeholder": {
-            "type": "string",
-            "allowedValues": [],
+        "AksSettings": {
+            "type": "object",
             "metadata": {
                 "description": "description"
             }
         }},
-    "variables": {},
-    "resources": [],
+    "variables": {
+        "name": "[parameters('AksSettings').name]",
+        "location": "[parameters('AksSettings').location]",
+        "dnsPrefix": "[parameters('AksSettings').dnsPrefix]",
+        "nodeSubnet": "[parameters('AksSettings').nodeSubnet]",
+        "nodeSize": "[parameters('AksSettings').nodeSize]",
+        "omsId": "[parameters('AksSettings').omsId]"
+    },
+    "resources": [
+        {
+            "apiVersion": "2020-03-01",
+            "dependsOn": [],
+            "type": "Microsoft.ContainerService/managedClusters",
+            "location": "[variables('location')]",
+            "name": "[variables('name')]",
+            "properties": {
+                "kubernetesVersion": "1.15.11",
+                "enableRBAC": true,
+                "dnsPrefix": "[variables('dnsPrefix')]",
+                "agentPoolProfiles": [
+                    {
+                        "name": "agentpool",
+                        "osDiskSizeGB": 0,
+                        "count": 3,
+                        "vmSize": "[variables('nodeSize')]",
+                        "osType": "Linux",
+                        "storageProfile": "ManagedDisks",
+                        "type": "VirtualMachineScaleSets",
+                        "mode": "System",
+                        "vnetSubnetID": "[variables('nodeSubnet')]"
+                    },
+                    {
+                        "name": "custompool",
+                        "osDiskSizeGB": 0,
+                        "count": 3,
+                        "vmSize": "[variables('nodeSize')]",
+                        "osType": "Linux",
+                        "storageProfile": "ManagedDisks",
+                        "type": "VirtualMachineScaleSets",
+                        "mode": "User",
+                        "vnetSubnetID": "[variables('nodeSubnet')]"
+                    }
+                ],
+                "networkProfile": {
+                    "loadBalancerSku": "standard",
+                    "networkPlugin": "azure",
+                    "networkPolicy": "azure",
+                    "serviceCidr": "11.0.0.0/16",
+                    "dnsServiceIP": "11.0.0.10",
+                    "dockerBridgeCidr": "172.17.0.1/16"
+                },
+                "apiServerAccessProfile": {
+                    "enablePrivateCluster": false
+                },
+                "addonProfiles": {
+                    "httpApplicationRouting": {
+                        "enabled": false
+                    },
+                    "omsagent": {
+                        "enabled": true
+                    }
+                }
+            },
+            "tags": {},
+            "identity": {
+                "type": "SystemAssigned"
+            }
+        }
+    ],
     "outputs": {}
   }

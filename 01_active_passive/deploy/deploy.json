@@ -120,8 +120,21 @@
                 }        
             }
         },
-        "aksSettings": {
-            "name": "[concat(variables('baseName'), '-aks')]"
+        "aksSettingsEast": {
+            "name": "[concat(variables('baseName'), '-aks-east')]",
+            "location": "eastus",
+            "dnsPrefix": "[variables('vnetSettingsEast').name]",
+            "nodeSubnet": "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',variables('rgEast'),'/providers/Microsoft.Network/virtualNetworks/',variables('vnetSettingsEast').name,'/subnets/','aks')]",
+            "nodeSize": "Standard_B2s",
+            "omsId": "/subscriptions/7e057795-c9f1-487d-9873-efdf05004976/resourcegroups/defaultresourcegroup-neu/providers/microsoft.operationalinsights/workspaces/defaultworkspace-7e057795-c9f1-487d-9873-efdf05004976-neu"
+        },
+        "aksSettingsWest": {
+            "name": "[concat(variables('baseName'), '-aks-west')]",
+            "location": "westus",
+            "dnsPrefix": "[variables('vnetSettingsWest').name]",
+            "nodeSubnet": "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',variables('rgWest'),'/providers/Microsoft.Network/virtualNetworks/',variables('vnetSettingsWest').name,'/subnets/','aks')]",
+            "nodeSize": "Standard_B2s",
+            "omsId": "/subscriptions/7e057795-c9f1-487d-9873-efdf05004976/resourcegroups/defaultresourcegroup-neu/providers/microsoft.operationalinsights/workspaces/defaultworkspace-7e057795-c9f1-487d-9873-efdf05004976-neu"
         },
         "trafficManagerSettings": {
             "name": "[concat(variables('baseName'), '-tm')]"
@@ -202,6 +215,48 @@
                 "parameters": {
                     "PostgresSettings": {
                         "value": "[variables('postgresSettingsWest')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "aks-east",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-01-01",
+            "resourceGroup": "[variables('rgEast')]",
+            "dependsOn": [
+                "vnet-east"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('baseUrl'),'aks/deploy.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "AksSettings": {
+                        "value": "[variables('aksSettingsEast')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "aks-west",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-01-01",
+            "resourceGroup": "[variables('rgEast')]",
+            "dependsOn": [
+                "vnet-west"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('baseUrl'),'aks/deploy.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "AksSettings": {
+                        "value": "[variables('aksSettingsWest')]"
                     }
                 }
             }
