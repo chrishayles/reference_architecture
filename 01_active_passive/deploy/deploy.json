@@ -438,7 +438,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('baseUrl'),'aks/deploy.json')]",
+                    "uri": "[uri(variables('baseUrl'),'vm/deploy.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
@@ -459,7 +459,7 @@
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
-                    "uri": "[uri(variables('baseUrl'),'aks/deploy.json')]",
+                    "uri": "[uri(variables('baseUrl'),'vm/deploy.json')]",
                     "contentVersion": "1.0.0.0"
                 },
                 "parameters": {
