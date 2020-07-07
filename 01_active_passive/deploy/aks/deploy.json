@@ -67,7 +67,7 @@
                         "enabled": false
                     },
                     "omsagent": {
-                        "enabled": true
+                        "enabled": false
                     }
                 }
             },
