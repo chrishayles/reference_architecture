@@ -28,6 +28,13 @@
             "metadata": {
                 "description": ""
             }
+        },
+        "Re-deploy": {
+            "type": "bool",
+            "defaultValue": false,
+            "metadata": {
+                "description": ""
+            }
         }
     },
     "variables": {
@@ -207,6 +214,7 @@
             "dependsOn": [
                 "psql-east"
             ],
+            "condition": "[equals(parameters('Re-deploy'), 'false')]",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
