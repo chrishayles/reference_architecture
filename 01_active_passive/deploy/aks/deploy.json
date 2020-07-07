@@ -38,17 +38,6 @@
                         "type": "VirtualMachineScaleSets",
                         "mode": "System",
                         "vnetSubnetID": "[variables('nodeSubnet')]"
-                    },
-                    {
-                        "name": "custompool",
-                        "osDiskSizeGB": 0,
-                        "count": 3,
-                        "vmSize": "[variables('nodeSize')]",
-                        "osType": "Linux",
-                        "storageProfile": "ManagedDisks",
-                        "type": "VirtualMachineScaleSets",
-                        "mode": "User",
-                        "vnetSubnetID": "[variables('nodeSubnet')]"
                     }
                 ],
                 "networkProfile": {
