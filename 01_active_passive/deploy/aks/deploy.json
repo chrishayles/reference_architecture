@@ -13,8 +13,7 @@
         "location": "[parameters('AksSettings').location]",
         "dnsPrefix": "[parameters('AksSettings').dnsPrefix]",
         "nodeSubnet": "[parameters('AksSettings').nodeSubnet]",
-        "nodeSize": "[parameters('AksSettings').nodeSize]",
-        "omsId": "[parameters('AksSettings').omsId]"
+        "nodeSize": "[parameters('AksSettings').nodeSize]"
     },
     "resources": [
         {
@@ -66,5 +65,10 @@
             }
         }
     ],
-    "outputs": {}
+    "outputs": {
+        "controlPlaneFQDN": {
+            "type": "string",
+            "value": "[reference(concat('Microsoft.ContainerService/managedClusters/', variables('name'))).fqdn]"
+        }
+    }
   }

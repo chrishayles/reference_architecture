@@ -29,6 +29,14 @@
                 "description": ""
             }
         },
+        "base VM size": {
+            "type": "string",
+            "defaultValue": "Standard_B2s",
+            "allowedValues": [],
+            "metadata": {
+                "description": ""
+            }
+        },
         "Re-deploy": {
             "type": "bool",
             "defaultValue": false,
@@ -133,7 +141,7 @@
             "location": "eastus",
             "dnsPrefix": "[variables('vnetSettingsEast').name]",
             "nodeSubnet": "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',variables('rgEast'),'/providers/Microsoft.Network/virtualNetworks/',variables('vnetSettingsEast').name,'/subnets/','aks')]",
-            "nodeSize": "Standard_B2s",
+            "nodeSize": "[parameters('base VM size')]",
             "omsId": "/subscriptions/7e057795-c9f1-487d-9873-efdf05004976/resourcegroups/defaultresourcegroup-neu/providers/microsoft.operationalinsights/workspaces/defaultworkspace-7e057795-c9f1-487d-9873-efdf05004976-neu"
         },
         "aksSettingsWest": {
@@ -141,17 +149,138 @@
             "location": "westus",
             "dnsPrefix": "[variables('vnetSettingsWest').name]",
             "nodeSubnet": "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',variables('rgWest'),'/providers/Microsoft.Network/virtualNetworks/',variables('vnetSettingsWest').name,'/subnets/','aks')]",
-            "nodeSize": "Standard_B2s",
+            "nodeSize": "[parameters('base VM size')]",
             "omsId": "/subscriptions/7e057795-c9f1-487d-9873-efdf05004976/resourcegroups/defaultresourcegroup-neu/providers/microsoft.operationalinsights/workspaces/defaultworkspace-7e057795-c9f1-487d-9873-efdf05004976-neu"
+        },
+        "pipSettingsEast":{
+            "name": "[concat(variables('baseName'), '-pip-lb-east')]",
+            "location": "eastus"
+        },
+        "pipSettingsWest":{
+            "name": "[concat(variables('baseName'), '-pip-lb-west')]",
+            "location": "westus"
         },
         "trafficManagerSettings": {
             "name": "[concat(variables('baseName'), '-tm')]"
         },
-        "vmSettings": {
-            "name": "[concat(variables('baseName'), '-vm')]"
+        "vmSettingsEast": {
+            "name": "[concat(variables('baseName'), '-vm-east')]",
+            "location": "eastus",
+            "nic": {
+                "name": "[concat(variables('baseName'), '-nic-vm-east')]",
+                "location": "eastus",
+                "ipConfiguration": {
+                    "name": "[concat(variables('baseName'), '-ipconfig-vm-east')]",
+                    "privateIpAllocationMethod": "dynamic",
+                    "vnet": "[variables('vnetSettingsEast').name]",
+                    "subnet": "admin"
+                },
+                "pip": {
+                    "name": "[concat(variables('baseName'), '-pip-vm-east')]",
+                    "location": "eastus",
+                    "allocationMethod": "Static",
+                    "version": "IPv4"
+                }
+            },
+            "size": "[parameters('base VM size')]",
+            "imageReference": {
+                "publisher": "Canonical",
+                "offer": "UbuntuServer",
+                "sku": "16.04-LTS",
+                "version": "latest"
+            },
+            "osDiskName": "osdisk-vm-east",
+            "admin": "[parameters('VM username')]",
+            "password": "[parameters('VM password')]",
+            "computerName": "admin-east",
+            "isMarketplace": false,
+            "extension": {
+                "name": "[concat(variables('baseName'), '-vm-vm-east-ext')]",
+                "location": "eastus",
+                "files": [
+                    "[uri(variables('baseUrl'),'scripts/vmsetup.sh')]"
+                ],
+                "vmName": "[concat(variables('baseName'), '-vm-east')]"
+            }
+        },
+        "vmSettingsWest": {
+            "name": "[concat(variables('baseName'), '-vm-west')]",
+            "location": "westus",
+            "nic": {
+                "name": "[concat(variables('baseName'), '-nic-vm-west')]",
+                "location": "westus",
+                "ipConfiguration": {
+                    "name": "[concat(variables('baseName'), '-ipconfig-vm-west')]",
+                    "privateIpAllocationMethod": "dynamic",
+                    "vnet": "[variables('vnetSettingsWest').name]",
+                    "subnet": "admin"
+                },
+                "pip": {
+                    "name": "[concat(variables('baseName'), '-pip-vm-west')]",
+                    "location": "westus",
+                    "allocationMethod": "Static",
+                    "version": "IPv4"
+                }
+            },
+            "size": "[parameters('base VM size')]",
+            "imageReference": {
+                "publisher": "Canonical",
+                "offer": "UbuntuServer",
+                "sku": "16.04-LTS",
+                "version": "latest"
+            },
+            "osDiskName": "osdisk-vm-west",
+            "admin": "[parameters('VM username')]",
+            "password": "[parameters('VM password')]",
+            "computerName": "admin-west",
+            "isMarketplace": false,
+            "extension": {
+                "name": "[concat(variables('baseName'), '-vm-vm-west-ext')]",
+                "location": "westus",
+                "files": [
+                    "[uri(variables('baseUrl'),'scripts/vmsetup.sh')]"
+                ],
+                "vmName": "[concat(variables('baseName'), '-vm-west')]"
+            }
         }
     },
     "resources": [
+        {
+            "name": "pip-lb-east",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-01-01",
+            "resourceGroup": "[variables('rgEast')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('baseUrl'),'pip/deploy.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "PipSettings": {
+                        "value": "[variables('pipSettingsEast')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "pip-lb-west",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-01-01",
+            "resourceGroup": "[variables('rgEast')]",
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('baseUrl'),'pip/deploy.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "PipSettings": {
+                        "value": "[variables('pipSettingsWest')]"
+                    }
+                }
+            }
+        },
         {
             "name": "vnet-east",
             "type": "Microsoft.Resources/deployments",
@@ -269,16 +398,86 @@
                     }
                 }
             }
+        },
+        {
+            "name": "traficmanager",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-01-01",
+            "resourceGroup": "[variables('rgEast')]",
+            "dependsOn": [
+                "pip-lb-east",
+                "pip-lb-west"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('baseUrl'),'aks/deploy.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "TmSettings": {
+                        "value": "[variables('trafficManagerSettings')]"
+                    },
+                    "EastIp": {
+                        "value": "[reference('pip-lb-east').outputs.PublicIpAddress.value]"
+                    },
+                    "WestIp": {
+                        "value": "[reference('pip-lb-west').outputs.PublicIpAddress.value]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "vm-east",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-01-01",
+            "resourceGroup": "[variables('rgEast')]",
+            "dependsOn": [
+                "vnet-east"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('baseUrl'),'aks/deploy.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "VmSettings": {
+                        "value": "[variables('vmSettingsEast')]"
+                    }
+                }
+            }
+        },
+        {
+            "name": "vm-west",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-01-01",
+            "resourceGroup": "[variables('rgWest')]",
+            "dependsOn": [
+                "vnet-west"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('baseUrl'),'aks/deploy.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "VmSettings": {
+                        "value": "[variables('vmSettingsWest')]"
+                    }
+                }
+            }
         }
     ],
     "outputs": {
         "Postgres East": {
             "type": "string",
-            "value": "Placeholder."
+            "value": "[reference('psql-east').outputs.fqdn.value]"
         },
         "Postgres West": {
             "type": "string",
-            "value": "Placeholder."
+            "value": "[reference('psql-west').outputs.fqdn.value]"
         }
     }
   }

@@ -1,0 +1,69 @@
+{
+    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+        "TmSettings": {
+            "type": "Object"
+        },
+        "EastIp": {
+            "type": "String"
+        },
+        "WestIp": {
+            "type": "String"
+        }
+    },
+    "variables": {
+        "name": "[parameters('TmSettings').name]",
+        "eastIp": "[parameters('EastIp')]",
+        "westIp": "[parameters('WestIp')]"
+    },
+    "resources": [
+        {
+        "apiVersion": "2015-11-01",
+        "type": "Microsoft.Network/trafficManagerProfiles",
+        "name": "[variables('name')]",
+        "location": "global",
+        "tags": {
+            "displayName": "Global-TrafficProfile"
+        },
+        "properties": {
+            "profileStatus": "Enabled",
+            "trafficRoutingMethod": "Performance",
+            "dnsConfig": {
+            "relativeName": "[variables('name')]",
+            "ttl": 60
+            },
+            "monitorConfig": {
+            "protocol": "HTTP",
+            "port": 80,
+            "path": "/"
+            },
+            "endpoints": [
+            {
+                "name": "endpoint-east",
+                "type": "Microsoft.Network/trafficManagerProfiles/externalEndpoints",
+                "properties": {
+                "endpointStatus": "Enabled",
+                "target": "[variables('eastIp')]",
+                "weight": 1,
+                "priority": 1,
+                "endpointLocation": "eastus"
+                }
+            },
+            {
+                "name": "endpoint-west",
+                "type": "Microsoft.Network/trafficManagerProfiles/externalEndpoints",
+                "properties": {
+                "endpointStatus": "Disabled",
+                "target": "[variables('westIp')]",
+                "weight": 1,
+                "priority": 2,
+                "endpointLocation": "westus"
+                }
+            }
+            ]
+        }
+        }
+    ],
+    "outputs": {}
+  }
