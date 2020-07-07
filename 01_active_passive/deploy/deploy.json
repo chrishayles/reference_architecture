@@ -473,11 +473,11 @@
     "outputs": {
         "Postgres East": {
             "type": "string",
-            "value": "[reference('psql-east').outputs.fqdn.value]"
+            "value": "[reference('psql-east', '2017-12-01').outputs.fqdn.value]"
         },
         "Postgres West": {
             "type": "string",
-            "value": "[reference('psql-west').outputs.fqdn.value]"
+            "value": "[reference('psql-west', '2017-12-01').outputs.fqdn.value]"
         }
     }
   }
