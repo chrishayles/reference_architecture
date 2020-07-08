@@ -190,7 +190,7 @@
                 "sku": "16.04-LTS",
                 "version": "latest"
             },
-            "osDiskName": "osdisk-vm-east",
+            "osDiskName": "[concat(variables('baseName'), '-osdisk-vm-east')]",
             "admin": "[parameters('VM username')]",
             "password": "[parameters('VM password')]",
             "computerName": "admin-east",
@@ -230,7 +230,7 @@
                 "sku": "16.04-LTS",
                 "version": "latest"
             },
-            "osDiskName": "osdisk-vm-west",
+            "osDiskName": "[concat(variables('baseName'), '-osdisk-vm-west')]",
             "admin": "[parameters('VM username')]",
             "password": "[parameters('VM password')]",
             "computerName": "admin-west",
