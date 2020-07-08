@@ -18,7 +18,7 @@
     "resources": [
         {
             "type": "Microsoft.DBforPostgreSQL/servers",
-            "apiVersion": "2017-12-01-preview",
+            "apiVersion": "2017-12-01",
             "name": "[variables('name')]",
             "location": "[variables('location')]",
             "sku": {
