@@ -38,8 +38,9 @@
             }
         },
         "Re-deploy": {
-            "type": "bool",
-            "defaultValue": false,
+            "type": "string",
+            "defaultValue": "false",
+            "allowedValues": ["true","false"],
             "metadata": {
                 "description": ""
             }
