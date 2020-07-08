@@ -236,7 +236,7 @@
             "computerName": "admin-west",
             "isMarketplace": false,
             "extension": {
-                "name": "[concat(variables('baseName'), '-vm-vm-west-ext')]",
+                "name": "[concat(variables('baseName'), '-vm-west-ext')]",
                 "location": "westus",
                 "files": [
                     "[uri(variables('baseUrl'),'scripts/vmsetup.sh')]"
@@ -467,6 +467,29 @@
                     "VmSettings": {
                         "value": "[variables('vmSettingsWest')]"
                     }
+                }
+            }
+        },
+        {
+            "name": "vm-east-ext",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-01-01",
+            "dependsOn": [
+                "vm-east"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('baseUrl'),'vmext/deploy.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "ExtSettings": {
+                        "value": "[variables('vmSettingsEast').extension]"
+                    },
+                    "CommandToRun": {
+                        "value": "[concat('./vmsetup.sh ')]"
+                    } 
                 }
             }
         }
