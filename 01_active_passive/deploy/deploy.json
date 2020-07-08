@@ -339,7 +339,7 @@
             "name": "psql-west",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-01-01",
-            "resourceGroup": "[variables('rgWest')]",
+            "resourceGroup": "[variables('rgEast')]",
             "dependsOn": [
                 "psql-east"
             ],
