@@ -28,22 +28,7 @@
                 "size": "102400",
                 "family": "Gen5"
             },
-            "properties": "[variables('properties')]",
-            "resources": [
-                {
-                    "name": "db1",
-                    "type": "databases",
-                    "apiVersion": "2017-12-01-preview",
-                    "properties": {
-                        "charset": "utf8",
-                        "collation": "English_United States.1252"
-                    },
-                    "condition": "[equals(variables('createMode'), 'Default')]",
-                    "dependsOn": [
-                        "[concat('Microsoft.DBforPostgreSQL/servers/', variables('name'))]"
-                    ]
-                }
-            ]
+            "properties": "[variables('properties')]"
         }
     ],
     "outputs": {
