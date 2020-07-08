@@ -477,7 +477,7 @@
         },
         "Postgres West": {
             "type": "string",
-            "value": "[reference('psql-west', '2020-01-01').outputs.fqdn.value]"
+            "value": "[reference('psql-west').outputs.fqdn.value]"
         }
     }
   }
