@@ -21,7 +21,7 @@ curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 # kubectl version --client -o yaml
 
 # Install jq
-sudo apt-get update && sudo apt-get install -y jq
+#sudo apt-get update && sudo apt-get install -y jq
 
 #METADATA=$(curl -s -H Metadata:true "http://169.254.169.254/metadata/instance/compute?api-version=2017-08-01")
 #TOKEN=$(curl 'http://169.254.169.254/metadata/identity/oauth2/token?api-version=2018-02-01&resource=https%3A%2F%2Fvault.azure.net' -s -H Metadata:true | jq -r .access_token)
@@ -29,6 +29,8 @@ sudo apt-get update && sudo apt-get install -y jq
 #SID=$(curl -s -H Metadata:true "http://169.254.169.254/metadata/instance/compute?api-version=2017-08-01" | jq -r .subscriptionId)
 #AKS=$(az aks list -g $RG | jq -r .[0].name)
 
+echo "Logging into Azure cli"
+az login --identity -u $MAN_ID
 az aks install-cli
 az aks get-credentials -g $AKS_RG -n $AKS_NAME
 
