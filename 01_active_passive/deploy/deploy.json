@@ -67,8 +67,8 @@
         "baseNameSafe": "[concat(substring(toLower(replace(variables('baseName'),'-', '')), 0, 8),variables('rando'))]",
         "rgEast": "[resourceGroup().name]",
         "rgWest": "[parameters('Resource Group West')]",
-        "rgAksEast": "[concat('MC_', variables('rgEast'), '_', variables('aksSettingsEast').name, '_', variables('aksSettingsEast').location)]",
-        "rgAKSWest": "[concat('MC_', variables('rgWest'), '_', variables('aksSettingsWest').name, '_', variables('aksSettingsWest').location)]",
+        "rgAksEast": "[concat(variables('rgEast'), '-nodes')]",
+        "rgAKSWest": "[concat(variables('rgWest'), '-nodes')]",
         "vnetSettingsEast": {
             "name": "[concat(variables('baseName'), '-vnet-east')]",
             "addressSpace": {
@@ -267,7 +267,7 @@
             "name": "pip-lb-east",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-01-01",
-            "resourceGroup": "[variables('rgEast')]",
+            "resourceGroup": "[variables('rgAksEast')]",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -285,7 +285,7 @@
             "name": "pip-lb-west",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-01-01",
-            "resourceGroup": "[variables('rgWest')]",
+            "resourceGroup": "[variables('rgAksWest')]",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
