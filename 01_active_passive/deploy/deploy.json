@@ -264,42 +264,6 @@
     },
     "resources": [
         {
-            "name": "pip-lb-east",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-01-01",
-            "resourceGroup": "[variables('rgAksEast')]",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[uri(variables('baseUrl'),'pip/deploy.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "PipSettings": {
-                        "value": "[variables('pipSettingsEast')]"
-                    }
-                }
-            }
-        },
-        {
-            "name": "pip-lb-west",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-01-01",
-            "resourceGroup": "[variables('rgAksWest')]",
-            "properties": {
-                "mode": "Incremental",
-                "templateLink": {
-                    "uri": "[uri(variables('baseUrl'),'pip/deploy.json')]",
-                    "contentVersion": "1.0.0.0"
-                },
-                "parameters": {
-                    "PipSettings": {
-                        "value": "[variables('pipSettingsWest')]"
-                    }
-                }
-            }
-        },
-        {
             "name": "vnet-east",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-01-01",
@@ -423,8 +387,6 @@
             "apiVersion": "2020-01-01",
             "resourceGroup": "[variables('rgEast')]",
             "dependsOn": [
-                "pip-lb-east",
-                "pip-lb-west",
                 "vm-east-ext",
                 "vm-west-ext"
             ],
@@ -439,10 +401,10 @@
                         "value": "[variables('trafficManagerSettings')]"
                     },
                     "EastIp": {
-                        "value": "[reference('pip-lb-east').outputs.PublicIpAddress.value]"
+                        "value": "placeholder"
                     },
                     "WestIp": {
-                        "value": "[reference('pip-lb-west').outputs.PublicIpAddress.value]"
+                        "value": "placeholder"
                     }
                 }
             }
@@ -515,7 +477,7 @@
                         "value": "[variables('vmSettingsEast').extension]"
                     },
                     "CommandToRun": {
-                        "value": "[concat('./vmsetup.sh ', '\"', variables('managedId'), '\" \"', variables('aksSettingsEast').name, '\" \"', variables('rgEast'), '\" \"', parameters('VM Username'), '\" \"', reference('pip-lb-east').outputs.PublicIpAddress.value, '\"')]"
+                        "value": "[concat('./vmsetup.sh ', '\"', variables('managedId'), '\" \"', variables('aksSettingsEast').name, '\" \"', variables('rgEast'), '\" \"', parameters('VM Username'), '\"')]"
                     } 
                 }
             }
@@ -540,7 +502,7 @@
                         "value": "[variables('vmSettingsWest').extension]"
                     },
                     "CommandToRun": {
-                        "value": "[concat('./vmsetup.sh ', '\"', variables('managedId'), '\" \"', variables('aksSettingsWest').name, '\" \"', variables('rgWest'), '\" \"', parameters('VM Username'), '\" \"', reference('pip-lb-west').outputs.PublicIpAddress.value, '\"')]"
+                        "value": "[concat('./vmsetup.sh ', '\"', variables('managedId'), '\" \"', variables('aksSettingsWest').name, '\" \"', variables('rgWest'), '\" \"', parameters('VM Username'), '\"')]"
                     } 
                 }
             }
