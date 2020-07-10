@@ -26,6 +26,7 @@
                 "kubernetesVersion": "1.15.11",
                 "enableRBAC": true,
                 "dnsPrefix": "[variables('dnsPrefix')]",
+                "nodeResourceGroup": "[resourceGroup().name]",
                 "agentPoolProfiles": [
                     {
                         "name": "agentpool",

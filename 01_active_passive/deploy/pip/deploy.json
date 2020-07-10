@@ -7,12 +7,6 @@
             "metadata": {
                 "description": ""
             }
-        },
-        "ResourceGroup": {
-            "type": "string",
-            "metadata": {
-                "description": ""
-            }
         }
     },
     "variables": {
@@ -21,64 +15,23 @@
     },
     "resources": [
         {
-            "name": "pip-lb-west-nested",
-            "type": "Microsoft.Resources/deployments",
-            "apiVersion": "2020-01-01",
-            "resourceGroup": "[parameters('ResourceGroup')]",
-            "properties": {
-                "mode": "Incremental",
-                "expressionEvaluationOptions": {
-                    "scope": "inner"
-                },
-                "parameters": {
-                    "location": {
-                        "value": "[variables('location')]"
-                    },
-                    "name": {
-                        "value": "[variables('name')]"
-                    }
-                },
-                "template": {
-                    "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
-                    "contentVersion": "1.0.0.0",
-                    "parameters": {
-                        "name": {
-                            "type": "string"
-                        },
-                        "location": {
-                            "type": "string"
-                        }
-                    },
-                    "variables": {},
-                    "resources": [
-                        {
-                            "name": "[parameters('name')]",
-                            "type": "Microsoft.Network/publicIPAddresses",
-                            "apiVersion": "2019-11-01",
-                            "location": "[parameters('location')]",
-                            "sku": {
-                                "name": "Standard"
-                            },
-                            "properties": {
-                                "publicIPAllocationMethod": "Static",
-                                "publicIPAddressVersion": "IPv4"
-                            }
-                        }
-                    ],
-                    "outputs": {
-                        "IpAddress": {
-                            "type": "string",
-                            "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses',parameters('name'))).ipAddress]"
-                        }
-                    }
-                }
-            }
+        "name": "[variables('name')]",
+        "type": "Microsoft.Network/publicIPAddresses",
+        "apiVersion": "2019-11-01",
+        "location": "[variables('location')]",
+        "sku": {
+            "name": "Standard"
+        },
+        "properties": {
+            "publicIPAllocationMethod": "Static",
+            "publicIPAddressVersion": "IPv4"
         }
+    }
     ],
     "outputs": {
         "PublicIpAddress": {
             "type": "string",
-            "value": "[reference('pip-lb-west-nested').outputs.IpAddress.value]"
+            "value": "[reference(resourceId('Microsoft.Network/publicIPAddresses',variables('name'))).ipAddress]"
         }
     }
   }
