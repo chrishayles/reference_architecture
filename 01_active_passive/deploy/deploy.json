@@ -513,6 +513,29 @@
                     } 
                 }
             }
+        },
+        {
+            "name": "vm-west-ext",
+            "type": "Microsoft.Resources/deployments",
+            "apiVersion": "2020-01-01",
+            "dependsOn": [
+                "vm-west"
+            ],
+            "properties": {
+                "mode": "Incremental",
+                "templateLink": {
+                    "uri": "[uri(variables('baseUrl'),'vmext/deploy.json')]",
+                    "contentVersion": "1.0.0.0"
+                },
+                "parameters": {
+                    "ExtSettings": {
+                        "value": "[variables('vmSettingsWest').extension]"
+                    },
+                    "CommandToRun": {
+                        "value": "[concat('./vmsetup.sh ', '\"', variables('managedId'), '\" \"', variables('aksSettingsWest').name, '\" \"', variables('rgWest'), '\" \"', parameters('VM Username'), '\"')]"
+                    } 
+                }
+            }
         }
     ],
     "outputs": {
