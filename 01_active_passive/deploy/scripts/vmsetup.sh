@@ -32,8 +32,6 @@ sudo runuser -l $ADMIN_ACCT -c "sudo az aks install-cli"
 echo "Getting .kube/config"
 sudo runuser -l $ADMIN_ACCT -c "az aks get-credentials -g $AKS_RG -n $AKS_NAME"
 
-echo "Done"
-
 # Get Helm
 echo "Get Helm"
 wget https://get.helm.sh/helm-v2.16.9-linux-amd64.tar.gz 
