@@ -44,6 +44,20 @@
             "metadata": {
                 "description": ""
             }
+        },
+        "Assigned Identity Name": {
+            "type": "string",
+            "defaultValue": "admin-vms",
+            "metadata": {
+                "description": ""
+            }
+        },
+		"Assigned Identity Resource Group": {
+            "type": "string",
+            "defaultValue": "cloud-shell-storage-westus",
+            "metadata": {
+                "description": ""
+            }
         }
     },
     "variables": {
@@ -243,7 +257,8 @@
                 ],
                 "vmName": "[concat(variables('baseName'), '-vm-west')]"
             }
-        }
+        },
+        "managedId": "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',parameters('Assigned Identity Resource Group'),'/providers/Microsoft.ManagedIdentity/userAssignedIdentities/',parameters('Assigned Identity Name'))]"
     },
     "resources": [
         {
@@ -445,6 +460,9 @@
                 "parameters": {
                     "VmSettings": {
                         "value": "[variables('vmSettingsEast')]"
+                    },
+                    "ManagedIdentity": {
+                        "value": "[reference(variables('managedId'),'2018-11-30')]"
                     }
                 }
             }
@@ -466,6 +484,9 @@
                 "parameters": {
                     "VmSettings": {
                         "value": "[variables('vmSettingsWest')]"
+                    },
+                    "ManagedIdentity": {
+                        "value": "[reference(variables('managedId'),'2018-11-30')]"
                     }
                 }
             }
@@ -488,7 +509,7 @@
                         "value": "[variables('vmSettingsEast').extension]"
                     },
                     "CommandToRun": {
-                        "value": "[concat('./vmsetup.sh ')]"
+                        "value": "[concat('./vmsetup.sh',' \"',variables('managedId'),'\"', ' \"', variables('aksSettingsEast'),'\"', ' \"',variables('rgEast'),'\"')]"
                     } 
                 }
             }
