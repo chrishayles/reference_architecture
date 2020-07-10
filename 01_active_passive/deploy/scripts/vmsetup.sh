@@ -73,3 +73,14 @@ sudo runuser -l $ADMIN_ACCT -c "helm repo add stable https://kubernetes-charts.s
 #     --set defaultBackend.nodeSelector.\"beta\.kubernetes\.io/os\"=linux \
 #     --set controller.service.loadBalancerIP=\"$STATIC_IP\" \
 #     --set controller.service.annotations.\"service\.beta\.kubernetes\.io/azure-dns-label-name\"=\"demo-aks-ingress\""
+
+# echo "Create LB"
+# sudo runuser -l $ADMIN_ACCT -c "az network public-ip create --resource-group $AKS_RG-nodes --name $AKS_NAME-pip --sku Standard --allocation-method static --query publicIp.ipAddress -o tsv"
+
+
+helm install --name nginx-ingress stable/nginx-ingress \
+    --namespace nginx \
+    --set controller.replicaCount=2 \
+    --set controller.nodeSelector."beta\.kubernetes\.io/os"=linux \
+    --set defaultBackend.nodeSelector."beta\.kubernetes\.io/os"=linux \
+    --set controller.service.annotations."service\.beta\.kubernetes\.io/azure-dns-label-name"="$AKS_NAME"

@@ -5,17 +5,17 @@
         "TmSettings": {
             "type": "Object"
         },
-        "EastIp": {
+        "EastHost": {
             "type": "String"
         },
-        "WestIp": {
+        "WestHost": {
             "type": "String"
         }
     },
     "variables": {
         "name": "[parameters('TmSettings').name]",
-        "eastIp": "[parameters('EastIp')]",
-        "westIp": "[parameters('WestIp')]"
+        "eastIp": "[parameters('EastHost')]",
+        "westIp": "[parameters('WestHost')]"
     },
     "resources": [
         {

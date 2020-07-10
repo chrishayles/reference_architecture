@@ -155,6 +155,7 @@
         },
         "aksSettingsEast": {
             "name": "[concat(variables('baseName'), '-aks-east')]",
+            "endpoint": "[concat(variables('baseName'), '-aks-east.eastus.cloudapp.azure.com')]",
             "location": "eastus",
             "dnsPrefix": "[variables('vnetSettingsEast').name]",
             "nodeSubnet": "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',variables('rgEast'),'/providers/Microsoft.Network/virtualNetworks/',variables('vnetSettingsEast').name,'/subnets/','aks')]",
@@ -163,6 +164,7 @@
         },
         "aksSettingsWest": {
             "name": "[concat(variables('baseName'), '-aks-west')]",
+            "endpoint": "[concat(variables('baseName'), '-aks-west.westus.cloudapp.azure.com')]",
             "location": "westus",
             "dnsPrefix": "[variables('vnetSettingsWest').name]",
             "nodeSubnet": "[concat('/subscriptions/',subscription().subscriptionId,'/resourceGroups/',variables('rgWest'),'/providers/Microsoft.Network/virtualNetworks/',variables('vnetSettingsWest').name,'/subnets/','aks')]",
@@ -400,11 +402,11 @@
                     "TmSettings": {
                         "value": "[variables('trafficManagerSettings')]"
                     },
-                    "EastIp": {
-                        "value": "placeholder"
+                    "EastHost": {
+                        "value": "[variables('aksSettingsEast').endpoint]"
                     },
-                    "WestIp": {
-                        "value": "placeholder"
+                    "WestHost": {
+                        "value": "[variables('aksSettingsWest').endpoint]"
                     }
                 }
             }
