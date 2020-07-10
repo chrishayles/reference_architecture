@@ -7,6 +7,7 @@ sleep 1m
 export  MAN_ID=$1
 export  AKS_NAME=$2
 export  AKS_RG=$3
+export  ADMIN_ACCT=$4
 
 # Install Azure cli
 echo "Installing Azure cli"
@@ -30,8 +31,12 @@ curl -sL https://aka.ms/InstallAzureCLIDeb | sudo bash
 #AKS=$(az aks list -g $RG | jq -r .[0].name)
 
 echo "Logging into Azure cli"
-az login --identity -u $MAN_ID
-az aks install-cli
-az aks get-credentials -g $AKS_RG -n $AKS_NAME
+sudo runuser -l $ADMIN_ACCT -c "az login --identity -u $MAN_ID"
+sudo runuser -l $ADMIN_ACCT -c "az aks install-cli"
+sudo runuser -l $ADMIN_ACCT -c "az aks get-credentials -g $AKS_RG -n $AKS_NAME"
+
+# mkdir /home/$ADMIN_ACCT/.kube
+# sudo cp /root/.kube/config /home/$ADMIN_ACCT/.kube/config
+# sudo chmod 777 /home/$ADMIN_ACCT/.kube/config
 
 kubectl get namespaces
