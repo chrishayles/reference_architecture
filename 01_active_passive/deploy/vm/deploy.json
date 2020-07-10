@@ -7,7 +7,7 @@
             "type": "Object"
         },
         "ManagedIdentity": {
-            "type": "object"
+            "type": "string"
         }
     },
     "variables": {
@@ -29,10 +29,7 @@
         "ipConfigVnet": "[parameters('VmSettings').nic.ipConfiguration.vnet]",
         "ipConfigSubnet": "[parameters('VmSettings').nic.ipConfiguration.subnet]",
         "allocationMethod": "[parameters('VmSettings').nic.pip.allocationMethod]",
-        "pipVersion": "[parameters('VmSettings').nic.pip.version]",
-        "midTenant": "[parameters('ManagedIdentity').tenantId]",
-        "midPrincipal": "[parameters('ManagedIdentity').principalId]",
-        "midClient": "[parameters('ManagedIdentity').clientId]"
+        "pipVersion": "[parameters('VmSettings').nic.pip.version]"
     },
     "resources": [
         {
@@ -87,10 +84,10 @@
                 "[variables('nicName')]"
             ],
             "identity": {
-                "principalId": "[variables('midPrincipal')]",   
-                "tenantId": "[variables('midTenant')]",
-                "clienttId": "[variables('midClient')]",
-                "type": "UserAssigned" 
+                "type": "UserAssigned",
+                "userAssignedIdentities": {
+                    "[parameters('ManagedIdentity')]": {}
+                }
             },
             "properties": {
                 "hardwareProfile": {

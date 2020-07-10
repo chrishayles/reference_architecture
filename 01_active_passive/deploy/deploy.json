@@ -462,7 +462,7 @@
                         "value": "[variables('vmSettingsEast')]"
                     },
                     "ManagedIdentity": {
-                        "value": "[reference(variables('managedId'),'2018-11-30')]"
+                        "value": "[variables('managedId')]"
                     }
                 }
             }
@@ -486,7 +486,7 @@
                         "value": "[variables('vmSettingsWest')]"
                     },
                     "ManagedIdentity": {
-                        "value": "[reference(variables('managedId'),'2018-11-30')]"
+                        "value": "[variables('managedId')]"
                     }
                 }
             }
