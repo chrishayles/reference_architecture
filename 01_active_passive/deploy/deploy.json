@@ -267,7 +267,6 @@
             "name": "pip-lb-east",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-01-01",
-            "resourceGroup": "[variables('rgAksEast')]",
             "dependsOn": [
                 "aks-east"
             ],
@@ -280,6 +279,9 @@
                 "parameters": {
                     "PipSettings": {
                         "value": "[variables('pipSettingsEast')]"
+                    },
+                    "ResourceGroup": {
+                        "value": "[variables('rgAksEast')]"
                     }
                 }
             }
@@ -288,7 +290,6 @@
             "name": "pip-lb-west",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-01-01",
-            "resourceGroup": "[variables('rgAksWest')]",
             "dependsOn": [
                 "aks-west"
             ],
@@ -301,6 +302,9 @@
                 "parameters": {
                     "PipSettings": {
                         "value": "[variables('pipSettingsWest')]"
+                    },
+                    "ResourceGroup": {
+                        "value": "[variables('rgAksWest')]"
                     }
                 }
             }
