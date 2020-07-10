@@ -65,11 +65,11 @@ echo "Add stable repo to Helm"
 sudo runuser -l $ADMIN_ACCT -c "helm repo add stable https://kubernetes-charts.storage.googleapis.com/"
 
 # Use Helm to deploy an NGINX ingress controller
-echo "Deploy ingress"
-sudo runuser -l $ADMIN_ACCT -c "helm install --name nginx-ingress stable/nginx-ingress \
-    --namespace nginx \
-    --set controller.replicaCount=2 \
-    --set controller.nodeSelector.\"beta\.kubernetes\.io/os\"=linux \
-    --set defaultBackend.nodeSelector.\"beta\.kubernetes\.io/os\"=linux \
-    --set controller.service.loadBalancerIP=\"$STATIC_IP\" \
-    --set controller.service.annotations.\"service\.beta\.kubernetes\.io/azure-dns-label-name\"=\"demo-aks-ingress\""
+# echo "Deploy ingress"
+# sudo runuser -l $ADMIN_ACCT -c "helm install --name nginx-ingress stable/nginx-ingress \
+#     --namespace nginx \
+#     --set controller.replicaCount=2 \
+#     --set controller.nodeSelector.\"beta\.kubernetes\.io/os\"=linux \
+#     --set defaultBackend.nodeSelector.\"beta\.kubernetes\.io/os\"=linux \
+#     --set controller.service.loadBalancerIP=\"$STATIC_IP\" \
+#     --set controller.service.annotations.\"service\.beta\.kubernetes\.io/azure-dns-label-name\"=\"demo-aks-ingress\""
