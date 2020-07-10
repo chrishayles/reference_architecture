@@ -464,7 +464,6 @@
             "resourceGroup": "[variables('rgEast')]",
             "dependsOn": [
                 "vm-east",
-                "pip-lb-east"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -488,8 +487,7 @@
             "apiVersion": "2020-01-01",
             "resourceGroup": "[variables('rgWest')]",
             "dependsOn": [
-                "vm-west",
-                "pip-lb-west"
+                "vm-west"
             ],
             "properties": {
                 "mode": "Incremental",
