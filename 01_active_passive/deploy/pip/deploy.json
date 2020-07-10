@@ -19,6 +19,9 @@
         "type": "Microsoft.Network/publicIPAddresses",
         "apiVersion": "2019-11-01",
         "location": "[variables('location')]",
+        "sku": {
+            "name": "Standard"
+        },
         "properties": {
             "publicIPAllocationMethod": "Static",
             "publicIPAddressVersion": "IPv4"

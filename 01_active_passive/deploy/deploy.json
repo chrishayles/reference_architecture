@@ -67,6 +67,8 @@
         "baseNameSafe": "[concat(substring(toLower(replace(variables('baseName'),'-', '')), 0, 8),variables('rando'))]",
         "rgEast": "[resourceGroup().name]",
         "rgWest": "[parameters('Resource Group West')]",
+        "rgAksEast": "[concat('MC_', variables('rgEast'), '_', variables('aksSettingsEast').name, '_', variables('aksSettingsEast').location)]",
+        "rgAKSWest": "[concat('MC_', variables('rgWest'), '_', variables('aksSettingsWest').name, '_', variables('aksSettingsWest').location)]",
         "vnetSettingsEast": {
             "name": "[concat(variables('baseName'), '-vnet-east')]",
             "addressSpace": {
@@ -265,7 +267,7 @@
             "name": "pip-lb-east",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-01-01",
-            "resourceGroup": "[variables('rgEast')]",
+            "resourceGroup": "[variables('rgAksEast')]",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -283,7 +285,7 @@
             "name": "pip-lb-west",
             "type": "Microsoft.Resources/deployments",
             "apiVersion": "2020-01-01",
-            "resourceGroup": "[variables('rgEast')]",
+            "resourceGroup": "[variables('rgAksWest')]",
             "properties": {
                 "mode": "Incremental",
                 "templateLink": {
@@ -422,7 +424,9 @@
             "resourceGroup": "[variables('rgEast')]",
             "dependsOn": [
                 "pip-lb-east",
-                "pip-lb-west"
+                "pip-lb-west",
+                "vm-east-ext",
+                "vm-west-ext"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -497,7 +501,8 @@
             "apiVersion": "2020-01-01",
             "resourceGroup": "[variables('rgEast')]",
             "dependsOn": [
-                "vm-east"
+                "vm-east",
+                "pip-lb-east"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -510,7 +515,7 @@
                         "value": "[variables('vmSettingsEast').extension]"
                     },
                     "CommandToRun": {
-                        "value": "[concat('./vmsetup.sh ', '\"', variables('managedId'), '\" \"', variables('aksSettingsEast').name, '\" \"', variables('rgEast'), '\" \"', parameters('VM Username'), '\"')]"
+                        "value": "[concat('./vmsetup.sh ', '\"', variables('managedId'), '\" \"', variables('aksSettingsEast').name, '\" \"', variables('rgEast'), '\" \"', parameters('VM Username'), '\" \"', reference('pip-lb-east').outputs.PublicIpAddress.value, '\"')]"
                     } 
                 }
             }
@@ -521,7 +526,8 @@
             "apiVersion": "2020-01-01",
             "resourceGroup": "[variables('rgWest')]",
             "dependsOn": [
-                "vm-west"
+                "vm-west",
+                "pip-lb-west"
             ],
             "properties": {
                 "mode": "Incremental",
@@ -534,7 +540,7 @@
                         "value": "[variables('vmSettingsWest').extension]"
                     },
                     "CommandToRun": {
-                        "value": "[concat('./vmsetup.sh ', '\"', variables('managedId'), '\" \"', variables('aksSettingsWest').name, '\" \"', variables('rgWest'), '\" \"', parameters('VM Username'), '\"')]"
+                        "value": "[concat('./vmsetup.sh ', '\"', variables('managedId'), '\" \"', variables('aksSettingsWest').name, '\" \"', variables('rgWest'), '\" \"', parameters('VM Username'), '\" \"', reference('pip-lb-west').outputs.PublicIpAddress.value, '\"')]"
                     } 
                 }
             }
