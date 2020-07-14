@@ -58,6 +58,10 @@ sudo runuser -l $ADMIN_ACCT -c "helm init --service-account tiller"
 echo "Create namespace"
 sudo runuser -l $ADMIN_ACCT -c "kubectl create namespace nginx"
 
+# Wait for other processes to finish
+echo "Sleeping for 1 minute..."
+sleep 1m
+
 # Add the official stable repository
 echo "Add stable repo to Helm"
 sudo runuser -l $ADMIN_ACCT -c "helm repo add stable https://kubernetes-charts.storage.googleapis.com/"
